@@ -21,7 +21,7 @@ def download_singapore_postal_codes():
             # Singapore postal codes range from 01000 to 82000
             # Generate all valid postal codes
             postal_codes = []
-            for i in range(1, 990000):
+            for i in range(1, 999999):
                 postal_codes.append(f"{i:06d}")
             
             print(f"Found {len(postal_codes)} Singapore postal codes to process...")
