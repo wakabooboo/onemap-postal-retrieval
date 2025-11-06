@@ -18,7 +18,7 @@ def download_singapore_postal_codes():
             writer = csv.writer(f)
             writer.writerow(['postal_code', 'latitude', 'longitude', 'address', 'block', 'road_name'])
             
-            # Singapore postal codes range from 01000 to 82000
+            # Singapore postal codes range from 1 to 999999
             # Generate all valid postal codes
             postal_codes = []
             for i in range(1, 999999):
