@@ -4,6 +4,35 @@ import json
 import os
 from pathlib import Path
 
+def generate_token():
+    """Generate OneMap API token"""
+    token_api = "https://www.onemap.gov.sg/api/auth/post/getToken"
+    creds_file = "onemap_credentials.json"
+
+    try:
+        if Path(creds_file).exists():
+            with open(creds_file, 'r') as f:
+                creds = json.load(f)
+                
+        payload = {
+            "email": creds.get('email'),
+            "password":creds.get('password')
+        }
+
+        response = requests.post(token_api, json=payload)
+        response.raise_for_status()
+
+        data = response.json()
+        token = data.get('access_token')
+
+        print(f"✓ Token generated successfully!")
+        print(f"  Token: {token[:20]}...")
+
+        return token
+    except Exception as e:
+        print(f"✗ Error reading onemap_credentials: {e}")
+        return None
+
 def download_singapore_postal_codes():
     """Download Singapore postal codes with lat/long"""
     print("Downloading Singapore postal codes...")
@@ -14,6 +43,7 @@ def download_singapore_postal_codes():
     search_api = "https://www.onemap.gov.sg/api/common/elastic/search"
     
     try:
+        token = generate_token()
         with open(output_file, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             writer.writerow(['postal_code', 'latitude', 'longitude', 'address', 'block', 'road_name'])
@@ -38,7 +68,7 @@ def download_singapore_postal_codes():
                     }
 
                     headers = {
-                        'Authorization': ''
+                        'Authorization': token
                     }
                     
                     response = requests.get(search_api, params=params, headers=headers, timeout=10)
